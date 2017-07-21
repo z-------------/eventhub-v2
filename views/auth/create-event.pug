@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    include /includes/head.pug
+    style.
+      label {
+        display: block;
+      }
+  body
+    h1= appName
+    
+    form
+      label
+        span Title
+        input(type="text", name="title")
+      label
+        span Date and time
+        input(type="datetime-local", name="date-start")
+        span to
+        input(type="datetime-local", name="date-end")
+      label
+        span Location
+        input(type="text", name="location")
+      label
+        span Description
+        textarea(name="description")
+      button Create
+      
+    include /includes/footer.pug
+    
+    include /includes/end_scripts.pug
+    
+    script(src="/script/auth-create-event.js")

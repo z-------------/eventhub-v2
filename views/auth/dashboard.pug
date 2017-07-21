@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    include /includes/head.pug
+  body
+    h1= appName
+    
+    ul#events-list
+      
+    a(href="create-event") Create new event
+    
+    include /includes/footer.pug
+    
+    include /includes/end_scripts.pug
+    
+    script(src="/script/auth-dashboard.js")

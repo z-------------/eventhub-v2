@@ -1,0 +1,27 @@
+script(src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js")
+script.
+  var config = {
+    apiKey: "AIzaSyCWJUN0C9iYA5sevGRi09__1FlwKPGqZPg",
+    authDomain: "eventhub-7cde3.firebaseapp.com",
+    databaseURL: "https://eventhub-7cde3.firebaseio.com",
+    projectId: "eventhub-7cde3",
+    storageBucket: "eventhub-7cde3.appspot.com",
+    messagingSenderId: "475074856016"
+  }
+  firebase.initializeApp(config)
+
+script.
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      // User is signed in.
+      console.log("signed in.", user)
+    } else {
+      // User is signed out.
+      console.log("not signed in.")
+      if (location.pathname.split("/")[0] === "auth") {
+        location.href = "/"
+      }
+    }
+  })
+  
+  var database = firebase.database()

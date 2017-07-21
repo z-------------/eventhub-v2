@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    include includes/head.pug
+  body
+    h1= appName
+    
+    form#login-form
+      label
+        span Email
+        input(type="email")
+      label
+        span Password
+        input(type="password")
+      button Sign up / Log in
+    
+    include includes/footer.pug
+    
+    include includes/end_scripts.pug
+    
+    script(src="script/index.js")
