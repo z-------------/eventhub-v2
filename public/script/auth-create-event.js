@@ -35,10 +35,9 @@ firebase.auth().onAuthStateChanged(function(user) {
       // get a key for the new event
       var key = firebase.database().ref().child("events").push().key
 
-      // write the new event's data simultaneously in the events list and the user's event list.
       var updates = {};
-      updates["/events/" + key] = eventInfo;
-      updates["/users/" + uid + "/" + key] = eventInfo;
+      updates["/events/" + key] = Object.assign(eventInfo, { ownerUID: uid })
+      updates[`/users/${uid}/${key}`] = Object.assign(eventInfo, { ownerUID: uid })
 
       return firebase.database().ref().update(updates);
     })
