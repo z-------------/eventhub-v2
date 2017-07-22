@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    include /includes/head.pug
+  body
+    h1= appName
+    
+    .event-container
+      h2.event-title= event.title
+      p #{event.dateStartFormatted} to #{event.dateEndFormatted}
+      p.event-location= event.location
+      p.event-description= event.description
+    
+    include /includes/footer.pug
+    
+    include /includes/end_scripts.pug
+    script(src="/lib/moment/moment.min.js")
+	
+  script.
+    var eventID = "#{eventID}"
+  script(src="/script/event.js")
