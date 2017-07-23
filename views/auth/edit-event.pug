@@ -1,0 +1,34 @@
+doctype html
+html
+  head
+    include /includes/head.pug
+    style.
+      label {
+        display: block;
+      }
+  body
+    h1 #{appName} - #{pageTitle}
+    
+    form
+      label
+        span Title
+        input(type="text", name="title", value=event.title)
+      label
+        span Date and time
+        input(type="datetime-local", name="date-start", value=event.dateStartFormattedBackwards)
+        span to
+        input(type="datetime-local", name="date-end", value=event.dateEndFormattedBackwards)
+      label
+        span Location
+        input(type="text", name="location", value=event.location)
+      label
+        span Description
+        textarea(name="description")= event.description
+      button Update
+      
+    include /includes/footer.pug
+    
+    include /includes/end_scripts.pug
+    
+    script const key = "#{event.id}"; console.log("#{event.ownerUID}")
+    script(src="/script/auth-edit-event.js")

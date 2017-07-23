@@ -13,7 +13,7 @@ firebase.auth().onAuthStateChanged(function(user) {
           eventElem.innerHTML = `
           <p>${event.title}</p>
           <p>${new Date(event.dateStart).toDateString()}</p>
-          <a href="/auth/edit-event/${id}">Edit event</a>
+          <a href="/auth/edit-event?id=${id}">Edit event</a>
           <a href="/event/${id}" target="_blank">View event</a>
           `
           eventsListElem.appendChild(eventElem)
