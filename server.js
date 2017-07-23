@@ -21,7 +21,7 @@ const PUG_VARS = {
 
 const moment = require("moment")
 const MOMENT_FORMAT = "MMMM Do YYYY, h:mm:ss a"
-const MOMENT_FORMAT_BACKWARDS = "YYYY-MM-DD[T]hh:mm" // 2017-06-01T08:30 -- for datetime-local input elements
+const MOMENT_FORMAT_BACKWARDS = "YYYY-MM-DD[T]HH:mm" // 2017-06-01T08:30 -- for datetime-local input elements
 
 app.use(express.static("public"))
 app.use(compression())
