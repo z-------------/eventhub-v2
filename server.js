@@ -6,13 +6,32 @@ const fs = require("fs")
 const path = require("path")
 
 const firebase = require("firebase")
-const fApp = firebase.initializeApp({
+firebase.initializeApp({
   apiKey: "AIzaSyCWJUN0C9iYA5sevGRi09__1FlwKPGqZPg",
   authDomain: "eventhub-7cde3.firebaseapp.com",
   databaseURL: "https://eventhub-7cde3.firebaseio.com",
   projectId: "eventhub-7cde3",
   messagingSenderId: "475074856016"
 })
+
+const fAdmin = require("firebase-admin")
+const fServiceAccountKey = require(path.join(__dirname, "service_account_key.json"));
+fAdmin.initializeApp({
+  credential: fAdmin.credential.cert(fServiceAccountKey),
+  databaseURL: "https://eventhub-7cde3.firebaseio.com"
+});
+const db = fAdmin.database()
+
+const nodemailer = require("nodemailer")
+const sgTransport = require("nodemailer-sendgrid-transport")
+const mailTransporter = nodemailer.createTransport(sgTransport({
+  auth: {
+    api_key: process.env.SENDGRID_API_KEY
+  }
+}))
+const MAIL_DEFAULTS = {
+  from: '"Eventhub notifications" <eventhub.noreply@gmail.com>'
+}
 
 app.locals.basedir = path.join(__dirname, "views");
 const PUG_VARS = {
@@ -34,12 +53,14 @@ app.get("/", function(req, res) {
 })
 
 app.get("/event/:eventID", function(req, res) {
-  firebase.database().ref("/events/" + req.params.eventID).once("value").then(function(snapshot) {
+  var eventID = req.params.eventID
+  firebase.database().ref("/events/" + eventID).once("value").then(function(snapshot) {
     var event = snapshot.val()
     if (event) {
       res.render("event", Object.assign(PUG_VARS, {
         pageTitle: event.title,
         event: Object.assign(event, {
+          id: eventID,
           dateStartFormatted: moment(new Date(event.dateStart)).format(MOMENT_FORMAT),
           dateEndFormatted: moment(new Date(event.dateEnd)).format(MOMENT_FORMAT)
         })
@@ -84,8 +105,40 @@ app.get("/auth/edit-event", function(req, res) {
 })
 
 var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+  var host = server.address().address
+  var port = server.address().port
 
-  console.log(`listening on port ${port}`);
+  console.log(`listening on port ${port}`)
 })
+
+db.ref("events").on("child_changed", function(snapshot) {
+  console.log(snapshot.val())
+  var eventID = snapshot.key
+  var event = snapshot.val()
+  db.ref(`subscriptions/${eventID}`).once("value").then(function(snapshot) {
+    var snapshotVal = snapshot.val()
+    var subscriptionKeys = Object.keys(snapshotVal)
+    var emailAddresses = []
+    for (let subscriptionKey of subscriptionKeys) {
+      mailTransporter.sendMail(Object.assign(MAIL_DEFAULTS, {
+        to: snapshotVal[subscriptionKey],
+        subject: `'${event.title}' was updated`,
+        html: `<p><strong>${event.title}</strong> has been updated. Here are the latest details:</p>
+          <ul>
+            <li><strong>Title:</strong> ${event.title}</li>
+            <li><strong>Date and time:</strong> ${moment(event.dateStart).format()} to ${moment(event.dateEnd).format()}</li>
+            <li><strong>Location:</strong> ${event.location}</li>
+            <li><strong>Description:</strong> ${event.description}</li>
+          </ul>
+          <p>You are receiving this notification because you are subscribed to '${event.title}'.</p>`
+      }), function(err, info) {
+        if (err) {
+          return console.log(err)
+        }
+        console.log("Message sent.", info)
+      })
+    }
+  })
+}, function (err) {
+  console.log("The read failed: " + err.code)
+});
