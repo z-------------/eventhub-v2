@@ -10,7 +10,7 @@ Eventhub aims to be a place for people to create and share events and for attend
 
 * [ ] Add event to Google Calendar
 * [ ] Export event as iCal
-* [ ] Mark self as "going"; anonymously (add to attendee count) or publicly (show username on event page)
+* [ ] Mark self as "going"; anonymously (only add to attendee count) or publicly (show username on event page)
 
 ### For authed users only
 
