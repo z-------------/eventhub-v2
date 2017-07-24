@@ -14,7 +14,7 @@ Eventhub aims to be a place for people to create and share events and for attend
 ### For authed users only
 
 * [ ] Import from iCal when creating event
-* [ ] Follow an event
+* [x] Follow an event
 * [ ] Export (some or all) created or followed events as iCal
 * [ ] Mark self as "going"; anonymously (only add to attendee count) or publicly (show username on event page)
 
