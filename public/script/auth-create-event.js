@@ -37,7 +37,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
       var updates = {};
       updates["/events/" + key] = Object.assign(eventInfo, { ownerUID: uid })
-      updates[`/users/${uid}/${key}`] = Object.assign(eventInfo, { ownerUID: uid })
+      updates[`/users/${uid}/events/${key}`] = Object.assign(eventInfo, { ownerUID: uid })
 
       return firebase.database().ref().update(updates);
     })

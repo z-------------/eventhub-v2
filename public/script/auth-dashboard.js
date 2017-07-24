@@ -4,7 +4,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User is signed in.
     var uid = user.uid
-    firebase.database().ref("/users/" + uid).once("value").then(function(snapshot) {
+    firebase.database().ref(`/users/${uid}/events`).once("value").then(function(snapshot) {
       var events = snapshot.val()
       if (events) {
         for (let id of Object.keys(events)) {
