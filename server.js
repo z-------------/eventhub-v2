@@ -117,26 +117,60 @@ db.ref("events").on("child_changed", function(snapshot) {
   var event = snapshot.val()
   db.ref(`subscriptions/${eventID}`).once("value").then(function(snapshot) {
     var snapshotVal = snapshot.val()
-    var subscriptionKeys = Object.keys(snapshotVal)
-    var emailAddresses = []
-    for (let subscriptionKey of subscriptionKeys) {
-      mailTransporter.sendMail(Object.assign(MAIL_DEFAULTS, {
-        to: snapshotVal[subscriptionKey],
-        subject: `'${event.title}' was updated`,
-        html: `<p><strong>${event.title}</strong> has been updated. Here are the latest details:</p>
-          <ul>
-            <li><strong>Title:</strong> ${event.title}</li>
-            <li><strong>Date and time:</strong> ${moment(event.dateStart).format()} to ${moment(event.dateEnd).format()}</li>
-            <li><strong>Location:</strong> ${event.location}</li>
-            <li><strong>Description:</strong> ${event.description}</li>
-          </ul>
-          <p>You are receiving this notification because you are subscribed to '${event.title}'.</p>`
-      }), function(err, info) {
-        if (err) {
-          return console.log(err)
-        }
-        console.log("Message sent.", info)
-      })
+    var keys = Object.keys(snapshotVal)
+
+    for (let key of keys) {
+      var subscriptionInfo = snapshotVal[key]
+      var emailAddress;
+      
+      if (subscriptionInfo.hasOwnProperty("emailAddress")) {
+        emailAddress = subscriptionInfo.emailAddress
+        
+        mailTransporter.sendMail(Object.assign(MAIL_DEFAULTS, {
+          to: emailAddress,
+          subject: `'${event.title}' was updated`,
+          html: `<p><strong>${event.title}</strong> has been updated. Here are the latest details:</p>
+            <ul>
+              <li><strong>Title:</strong> ${event.title}</li>
+              <li><strong>Date and time:</strong> ${moment(event.dateStart).format()} to ${moment(event.dateEnd).format()}</li>
+              <li><strong>Location:</strong> ${event.location}</li>
+              <li><strong>Description:</strong> ${event.description}</li>
+            </ul>
+            <p>You are receiving this notification because you are subscribed to '${event.title}'.</p>`
+        }), function(err, info) {
+          if (err) {
+            return console.log(err)
+          }
+          console.log("Message sent.", info)
+        })
+      } else if (subscriptionInfo.hasOwnProperty("uid")) {
+        fAdmin.auth().getUser(subscriptionInfo.uid)
+          .then(function(userRecord) {
+            console.log("Successfully fetched user data:", userRecord.toJSON())
+            emailAddress = userRecord.email
+            
+            mailTransporter.sendMail(Object.assign(MAIL_DEFAULTS, {
+              to: emailAddress,
+              subject: `'${event.title}' was updated`,
+              html: `<p><strong>${event.title}</strong> has been updated. Here are the latest details:</p>
+                <ul>
+                  <li><strong>Title:</strong> ${event.title}</li>
+                  <li><strong>Date and time:</strong> ${moment(event.dateStart).format()} to ${moment(event.dateEnd).format()}</li>
+                  <li><strong>Location:</strong> ${event.location}</li>
+                  <li><strong>Description:</strong> ${event.description}</li>
+                </ul>
+                <p>You are receiving this notification because you are following '${event.title}'.</p>`
+            }), function(err, info) {
+              if (err) {
+                return console.log(err)
+              }
+              console.log("Message sent.", info)
+            })
+          })
+          .catch(function(err) {
+            console.log("Error fetching user data:", err)
+          })
+      }
     }
   })
 }, function (err) {

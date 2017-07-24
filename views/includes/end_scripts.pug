@@ -15,12 +15,14 @@ script.
     if (user) {
       // User is signed in.
       console.log("signed in.", user)
+      document.body.classList.add("eventhub-authed")
     } else {
       // User is signed out.
       console.log("not signed in.")
       if (location.pathname.split("/")[0] === "auth") {
         location.href = "/"
       }
+      document.body.classList.add("eventhub-nonauthed")
     }
   })
   

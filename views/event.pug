@@ -11,9 +11,13 @@ html
       p.event-location= event.location
       p.event-description= event.description
       .event-subscribe
-        p Get notified by email whenever this event is updated:
-        input(type="email", placeholder="enter your email address")
-        button Subscribe
+        .event-subscribe_nonauthed.nonauthed-only
+          p Get notified by email whenever this event is updated:
+          input(type="email", placeholder="enter your email address")
+          button.event-subscribe_button-nonauthed Subscribe
+        .event-subscribe_authed.authed-only
+          p Get notified whenever this event is updated:
+          button.event-subscribe_button-authed Follow
     
     include /includes/footer.pug
     

@@ -1,21 +1,41 @@
 var subscribeEmailInput = document.querySelector(".event-subscribe input[type=email]")
-var subscribeEmailButton = document.querySelector(".event-subscribe button")
+var subscribeEmailButton = document.querySelector(".event-subscribe button.event-subscribe_button-nonauthed")
+var followButton = document.querySelector(".event-subscribe button.event-subscribe_button-authed")
 
-subscribeEmailButton.addEventListener("click", function(evt) {
-  evt.preventDefault()
-  
-  if (subscribeEmailButton.matches(":valid")) {
-    console.log("valid email address supplied")
-  
-    var emailAddress = subscribeEmailInput.value
-    
-    var key = firebase.database().ref().child(`subscriptions/${eventID}`).push().key
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    followButton.addEventListener("click", function(evt) {
+      evt.preventDefault()
 
-    var updates = {}
-    updates[`/subscriptions/${eventID}/${key}`] = emailAddress
+      var key = firebase.database().ref().child(`subscriptions/${eventID}`).push().key
 
-    return firebase.database().ref().update(updates);
+      var updates = {}
+      updates[`/subscriptions/${eventID}/${key}`] = {
+        uid: user.uid
+      }
+
+      return firebase.database().ref().update(updates);
+    })
   } else {
-    console.log("invalid email address supplied")
+    subscribeEmailButton.addEventListener("click", function(evt) {
+      evt.preventDefault()
+
+      if (subscribeEmailButton.matches(":valid")) {
+        console.log("valid email address supplied")
+
+        var emailAddress = subscribeEmailInput.value
+
+        var key = firebase.database().ref().child(`subscriptions/${eventID}`).push().key
+
+        var updates = {}
+        updates[`/subscriptions/${eventID}/${key}`] = {
+          emailAddress: emailAddress
+        }
+
+        return firebase.database().ref().update(updates);
+      } else {
+        console.log("invalid email address supplied")
+      }
+    })
   }
 })
