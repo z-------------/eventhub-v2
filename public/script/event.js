@@ -6,12 +6,15 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     followButton.addEventListener("click", function(evt) {
       evt.preventDefault()
-
-      var key = firebase.database().ref().child(`subscriptions/${eventID}`).push().key
+      
+      var key1 = firebase.database().ref().child(`subscriptions/${eventID}`).push().key
 
       var updates = {}
-      updates[`/subscriptions/${eventID}/${key}`] = {
+      updates[`subscriptions/${eventID}/${key1}`] = {
         uid: user.uid
+      }
+      updates[`users/${user.uid}/following/${eventID}`] = {
+        subscriptionID: key1
       }
 
       return firebase.database().ref().update(updates);
