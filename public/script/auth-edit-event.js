@@ -8,7 +8,7 @@ var submitButton = document.querySelector("form button")
 function parseDatetimeInput(datetimeString) {
   // yyyy-mm-ddThh:mm
   var year = Number(datetimeString.substring(0, 4))
-  var month = Number(datetimeString.substring(5, 7))
+  var month = Number(datetimeString.substring(5, 7)) - 1
   var day = Number(datetimeString.substring(8, 10))
   var hour = Number(datetimeString.substring(11, 13))
   var minute = Number(datetimeString.substring(14, 16))
