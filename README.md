@@ -8,7 +8,7 @@ Eventhub aims to be a place for people to create and share events and for attend
 
 ### For all users
 
-* [ ] Add event to Google Calendar
+* [ ] Add event to Google Calendar (one-time)
 * [ ] Export event as iCal
 
 ### For authed users only
@@ -17,6 +17,7 @@ Eventhub aims to be a place for people to create and share events and for attend
 * [x] Follow an event
 * [ ] Export (some or all) created or followed events as iCal
 * [ ] Mark self as "going"; anonymously (only add to attendee count) or publicly (show username on event page)
+* [ ] Google Calendar two-way sync for owned (writeable) and followed (read-only) events
 
 ### For non-authed users only
 
