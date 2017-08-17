@@ -104,7 +104,7 @@ app.get("/auth/edit-event", function(req, res) {
   }
 })
 
-var server = app.listen(3000, function () {
+var server = app.listen(process.env.PORT || 3000, function () {
   var host = server.address().address
   var port = server.address().port
 
@@ -122,10 +122,10 @@ db.ref("events").on("child_changed", function(snapshot) {
     for (let key of keys) {
       var subscriptionInfo = snapshotVal[key]
       var emailAddress;
-      
+
       if (subscriptionInfo.hasOwnProperty("emailAddress")) {
         emailAddress = subscriptionInfo.emailAddress
-        
+
         mailTransporter.sendMail(Object.assign(MAIL_DEFAULTS, {
           to: emailAddress,
           subject: `'${event.title}' was updated`,
@@ -148,7 +148,7 @@ db.ref("events").on("child_changed", function(snapshot) {
           .then(function(userRecord) {
             console.log("Successfully fetched user data:", userRecord.toJSON())
             emailAddress = userRecord.email
-            
+
             mailTransporter.sendMail(Object.assign(MAIL_DEFAULTS, {
               to: emailAddress,
               subject: `'${event.title}' was updated`,
